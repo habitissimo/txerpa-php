@@ -32,7 +32,7 @@ Simply require and initialize the `Txerpa` class like so:
 	require_once 'txerpa.php';
 	$txerpa = new Txerpa();
     
-You will need to set your authentication credentials to the previous example to work.
+You will need to set your authentication credentials to get this example working.
 Open `lib/txerpa.php` and in the `__construct()` method adjust the following values:
 
     $this->username = 'your_username';
