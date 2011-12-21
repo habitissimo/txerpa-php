@@ -15,20 +15,6 @@ class TxerpaTest extends ztest\UnitTestCase {
         assert_empty($data);
     }
     
-    function test_client_found() {
-        $data = $this->txerpa->clientSearch('id', 1);
-        ensure(is_array($data));
-        assert_equal(count($data), 1);
-        assert_equal($data[0]->name, "Habitissimo S.L");
-    }
-    
-    function test_invoice_found() {
-        $data = $this->txerpa->invoiceSearch('id', 1);
-        ensure(is_array($data));
-        assert_equal(count($data), 1);
-        assert_equal($data[0]->number, "2011/001");
-    }
-    
     function test_client_create() {
       $this->client_id = $this->txerpa->clientNew(array(
         'name' => 'Batman',
