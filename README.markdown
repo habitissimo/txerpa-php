@@ -16,6 +16,13 @@ exception it will return an empty array when a collection is expected or null wh
 
 Click the `download` link above or `git clone git://github.com/habitissimo/txerpa-api.git`
 
+From the cloned directory do:
+
+    git submodule init
+    git submodule update
+
+This will load the [curl](https://github.com/hugochinchilla/curl) wrapper dependency on which this one relies.
+
 ## Usage
 
 ### Initialization
