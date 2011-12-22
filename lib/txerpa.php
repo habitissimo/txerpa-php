@@ -9,9 +9,9 @@ class Txerpa {
   
   public function __construct()
   {
-    $this->username = 'username';
-    $this->password = 'secret';
-    $this->base_url = 'http://api.txerpa.com/api';
+    $this->username = TXERPAAPI_USERNAME;
+    $this->password = TXERPAAPI_PASSWORD;
+    $this->base_url = TXERPAAPI_BASEURL;
     $this->curl = new Curl();
     $this->curl->setAuth($this->username, $this->password);
     $this->curl->headers['Content-Type'] = 'application/json';
@@ -85,6 +85,17 @@ class Txerpa {
   }
   
   /**
+   * Uses the same parameters as clientNew.
+   */
+  public function clientUpdate(array $client_data)
+  {
+    assert(key_exists('id', $client_data));
+    $response = $this->put('/client/', $client_data);
+    $data = json_decode($response->body);
+    return (int) $data->id;
+  }
+  
+  /**
    * La consulta es realizada por semejanza y no es sensible a
    * mayúsculas/minúsculas (ilike) excepto con el campo id, que es realizada
    * por igualdad.
@@ -105,6 +116,19 @@ class Txerpa {
     }
     $data = json_decode($response->body);
     return (array) $data->invoices;    
+  }
+  
+  /**
+   * Returns the invoice for an id.
+   * This is just a wrapper for invoiceSearch.
+   */
+  public function invoiceById($id)
+  {
+    $invoices = $this->invoiceSearch('id', $id);
+    if (!$invoices) {
+      return null;
+    }
+    return $invoices[0];
   }
   
   /**
@@ -224,6 +248,9 @@ class Txerpa {
       case 'POST':
         $response = $this->curl->post($this->base_url.$url, $data, 'application/json');
         break;
+      case 'PUT':
+        $response = $this->curl->put($this->base_url.$url, $data, 'application/json');
+        break;      
       default:
         $response = $this->curl->request($method, $this->base_url.$url, $data);
     }
@@ -243,6 +270,11 @@ class Txerpa {
   private function post($url, $data=array())
   {
     return $this->request('POST', $url, json_encode($data));
+  }
+  
+  private function put($url, $data=array())
+  {
+    return $this->request('PUT', $url, json_encode($data));
   }
   
 }

@@ -17,8 +17,13 @@ class TxerpaTest extends ztest\UnitTestCase {
     
     function test_client_create() {
       $this->client_id = $this->txerpa->clientNew(array(
-        'name' => 'Batman',
-        'contact_name' => 'Bruce Wayne',
+        'name'          => 'Batman',
+        'contact_name'  => 'Bruce Wayne',
+        'email'         => 'batman@robin.com',
+        'zip'           => 07121,
+        'country_id'    => 1,
+        'street'        => 'Wayne Tower',
+        'city'          => 'Gotham City',
       ));
       assert_equal(gettype($this->client_id), 'integer');
     }
@@ -34,6 +39,7 @@ class TxerpaTest extends ztest\UnitTestCase {
       $data = $this->txerpa->invoiceNew(array(
         'name'      => 'Factura Batmóvil',
         'client_id' => $this->client_id,
+        'is_paid'   => false,
         'lines'     => array(
           array(
             'product_id'  => 1,
@@ -54,10 +60,10 @@ class TxerpaTest extends ztest\UnitTestCase {
     }
     
     function test_invoice_created_exists() {
-      $data = $this->txerpa->invoiceSearch('id', $this->invoice_id);
-      ensure(is_array($data));
-      assert_not_empty($data);
-      assert_equal($data[0]->id, $this->invoice_id);
+      $invoice = $this->txerpa->invoiceById($this->invoice_id);
+      assert_not_null($invoice);
+      assert_equal($invoice->id, $this->invoice_id);
+      assert_equal($invoice->lines[0]->name, 'Batmóvil');
     }
     
     function test_invoice_pdf()
