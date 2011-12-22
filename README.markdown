@@ -25,6 +25,15 @@ This will load the [curl](https://github.com/hugochinchilla/curl) wrapper depend
 
 ## Usage
 
+First of all you have to specify your authentication credentials for the API.
+
+    cp config_sample.php config.php
+    
+Now edit `config.php` with your favorite editor and set the values for username and password.
+
+    define('TXERPAAPI_USERNAME', 'username');
+    define('TXERPAAPI_PASSWORD', 'secret');
+
 ### Initialization
 
 Simply require and initialize the `Txerpa` class like so:
@@ -32,13 +41,6 @@ Simply require and initialize the `Txerpa` class like so:
 	require_once 'txerpa.php';
 	$txerpa = new Txerpa();
     
-You will need to set your authentication credentials to get this example working.
-Open `lib/txerpa.php` and in the `__construct()` method adjust the following values:
-
-    $this->username = 'your_username';
-    $this->password = 'secret';
-
-
 ### Performing a Request
 
 	$response = $txerpa->currencies();
@@ -46,7 +48,7 @@ Open `lib/txerpa.php` and in the `__construct()` method adjust the following val
 
 ## Testing
 
-Uses [ztest](http://github.com/jaz303/ztest), simply download it to `path/to/txerpa/test/ztest` (or anywhere else in your php include_path)
+Uses [ztest](http://github.com/jaz303/ztest), simply download it to `path/to/txerpa-api/test/ztest` (or anywhere else in your php include_path)
 
 Then run `test/runner.php`
 

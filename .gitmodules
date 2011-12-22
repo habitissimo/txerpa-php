@@ -1,3 +1,6 @@
 [submodule "curl"]
 	path = curl
 	url = git://github.com/hugochinchilla/curl.git
+[submodule "test/ztest"]
+	path = test/ztest
+	url = git://github.com/jaz303/ztest.git
