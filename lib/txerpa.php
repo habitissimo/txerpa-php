@@ -9,6 +9,11 @@ class Txerpa {
   
   public function __construct()
   {
+    // load config.php if not loaded (this could happen if the class was autoloaded)
+    if (!defined('TXERPAAPI_BASEURL')) {
+      require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config.php';
+    }
+    
     $this->username = TXERPAAPI_USERNAME;
     $this->password = TXERPAAPI_PASSWORD;
     $this->base_url = TXERPAAPI_BASEURL;
@@ -65,7 +70,7 @@ class Txerpa {
   /**
    * El único campo requerido es name, se pueden usar los siguientes campos:
    * name, vat, comment, fax, contact_name, phone, mobile, email, zip,
-   * country_id, street, street2, city
+   * country_id, street, street2, city, fiscal_position_id
    *
    * - Si vat contienen un CIF válido, el cliente es marcado como "sujeto a IVA".
    * - El cliente se marca como activo por defecto.
@@ -86,6 +91,14 @@ class Txerpa {
   
   /**
    * Uses the same parameters as clientNew.
+   * Overwrites the existing client data with the values of $client_data,
+   * all non defined values already set on the client will update to Null
+   * if not defined in the $client_data.
+   *
+   * @param   array $client_data
+   *
+   * @retuns  integer the client ID.
+   * @throws  TxerpaException
    */
   public function clientUpdate(array $client_data)
   {
@@ -121,6 +134,11 @@ class Txerpa {
   /**
    * Returns the invoice for an id.
    * This is just a wrapper for invoiceSearch.
+   * 
+   * @param   integer $id la id de factura.
+   *
+   * @retuns  StdClass|null the matching invoice.
+   * @throws  TxerpaException
    */
   public function invoiceById($id)
   {
@@ -158,7 +176,8 @@ class Txerpa {
    * El campo lines es una colección de lineas para la factura, donde cada
    * linea require los siguientes campos: product_id y quantity, pero están
    * disponibles los siguientes: product_id, quantity, discount, note,
-   * invoice_product_unit_price, invoice_product_name y invoice_product_description.
+   * invoice_product_unit_price, invoice_product_name, invoice_product_description,
+   * date_invoice ( yyyy-mm-dd ), journal_code, invoice_number.
    *
    * - Las facturas creadas con el API Txerpa tienen como origen "API TXERPA".
    * - Los campos invoice_product_unit_price, invoice_product_name y invoice_product_description
@@ -215,27 +234,48 @@ class Txerpa {
   }
   
   /**
+   * Nos permite recuperar el listado completo de paises de Txerpa.
+   * 
+   * @retuns  Array   an array of countries matching the criteria.
+   * @throws  TxerpaException
+   */  
+  public function countryAll()
+  {
+    $response = $this->get('/countries/');
+    $data = json_decode($response);
+    return (array) $data->countries;
+  }
+  
+  /**
+   * Hace una búsqueda en las posiciones fiscales existentes.
+   * La consulta es realizada por semejanza y no es sensible a mayúsculas/minúsculas (ilike)
+   * excepto con el campo id, que se realiza por igualdad.
+   *
+   * @param   string  $field puede ser uno de: id, name.
+   * @param   string  $value es la cadena de texto a utilizar en la consulta.
+   *
+   * @retuns  Array   an array of countries matching the criteria.
+   * @throws  TxerpaException
+   */
+  public function fiscalPositionSearch($field, $value)
+  {
+    $response = $this->get('/posiciones_fiscales/', array('key' => $field, 'q' => $value));
+    $data = json_decode($response->body);
+    return (array) $data->countries;
+  }
+  
+  /**
    * Obtención de todas las monedas: Nos permite recuperar el listado completo
    * de monedas de Txerpa.
    * 
    * @retuns  array   All the currencies.
    * @throws  TxerpaException
    */      
-  public function currenciesAll()
+  public function currencyAll()
   {
     $response = $this->get('/monedas/');
     $data = json_decode($response->body);
     return (array) $data->monedas;
-  }
-
-  /**
-   * Nos permite recuperar el listado completo de paises de Txerpa.
-   */  
-  private function countriesAll()
-  {
-    $response = $this->get('/countries/');
-    $data = json_decode($response);
-    return (array) $data->countries;
   }
 
   private function request($method, $url, $data=array())
