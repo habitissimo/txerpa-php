@@ -261,7 +261,7 @@ class Txerpa {
   {
     $response = $this->get('/posiciones_fiscales/', array('key' => $field, 'q' => $value));
     $data = json_decode($response->body);
-    return (array) $data->countries;
+    return (array) $data->fiscal_positions;
   }
   
   /**
