@@ -58,7 +58,7 @@ class Txerpa {
   public function clientByCIF($cif)
   {
     try {
-      $response = $this->get('/cif/'.$cif);
+      $response = $this->get('/client/'.$cif.'/');
     } catch (TxerpaException $e) {
       if (404 != $e->getCode()) throw $e;
       return array();
@@ -297,7 +297,9 @@ class Txerpa {
     
     if (200 != $response->headers['Status'])
     {
-      throw new TxerpaException($response->body, $response->headers['Status']);
+      $msg = sprintf('%s: %s', strtoupper($method), $url);
+      $msg .= "\n\nResponse body:\n".$response->body;
+      throw new TxerpaException($msg, $response->headers['Status']);
     }
     return $response;
   }
