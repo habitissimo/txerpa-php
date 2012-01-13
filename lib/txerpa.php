@@ -298,6 +298,10 @@ class Txerpa {
     if (200 != $response->headers['Status'])
     {
       $msg = sprintf('%s: %s', strtoupper($method), $url);
+      if ('POST' == strtoupper($method))
+      {
+        $msg .= "\nPOST_DATA: ".str_replace('\"', '"', json_encode($data));
+      }
       $msg .= "\n\nResponse body:\n".$response->body;
       throw new TxerpaException($msg, $response->headers['Status']);
     }
