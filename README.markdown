@@ -43,7 +43,7 @@ Simply require and initialize the `Txerpa` class like so:
     
 ### Performing a Request
 
-	$response = $txerpa->currencies();
+	$response = $txerpa->currencyAll();
 
 
 ## Testing
