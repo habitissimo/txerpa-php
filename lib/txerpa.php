@@ -61,10 +61,10 @@ class Txerpa {
       $response = $this->get('/client/'.$cif.'/');
     } catch (TxerpaException $e) {
       if (404 != $e->getCode()) throw $e;
-      return array();
+      return null;
     }
     $data = json_decode($response->body);
-    return (array) $data->clients;
+    return $data->client;
   }
   
   /**
