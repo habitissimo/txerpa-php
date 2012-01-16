@@ -52,7 +52,7 @@ class Txerpa {
    * 
    * @param   string  $cif: puede ser uno de: city, vat, name, phone, mobile, fax o id.
    *
-   * @retuns  Array   an array of clients matching the criteria.
+   * @retuns  StdClass|null   client matching the criteria or null.
    * @throws  TxerpaException
    */  
   public function clientByCIF($cif)
